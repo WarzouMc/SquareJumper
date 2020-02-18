@@ -28,7 +28,15 @@ def start(size_div=1.0):
     game.generation(screen, windows_size=size)
     while running:
         if game.key.get(pygame.K_LEFT):
-            print("test")
+            screen.fill(black)
+            for terrain in game.terrain_block:
+                terrain.move(screen=screen, add=[5, 0])
+            pygame.time.delay(10)
+        if game.key.get(pygame.K_RIGHT):
+            screen.fill(black)
+            for terrain in game.terrain_block:
+                terrain.move(screen=screen, add=[-5, 0])
+            pygame.time.delay(10)
         for event in pygame.event.get():
             keyListener.EventListener(event, game)
 

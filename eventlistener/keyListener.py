@@ -12,7 +12,6 @@ class EventListener:
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            print('test')
             game.key[event.key] = True
         elif event.type == pygame.KEYUP:
             game.key[event.key] = False

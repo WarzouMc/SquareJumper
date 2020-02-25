@@ -1,25 +1,28 @@
 import pygame
 
 
-class Terrain:
+class Terrain(pygame.sprite.Sprite):
 
     def __init__(self):
+        super().__init__()
         self.texture = pygame.image.load("assets/textures/test_terrain.png")
-        self.box = [3750, 75]
-        self.bound = [0, 0]
-        self.pos = [0, 0]
+        self.rect = self.texture.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
+        self.base_rect = [0, 0]
+        self.size = (0, 0)
 
-    def pop(self, screen, position):
-        screen.blit(self.texture, position)
-        self.bound = position
-        pygame.display.flip()
-        self.pos = position
+    def pop_gen(self, pos, size):
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.base_rect[0] = pos[0]
+        self.base_rect[1] = pos[1]
+        self.size = size
+
+    def pop(self, screen):
+        screen.blit(self.texture, self.rect)
 
     def move(self, screen, add):
-        self.pos[0] += add[0]
-        self.pos[1] += add[1]
-        if self.pos[0] == 0 or self.pos[0] == -2500:
-            self.pos[0] = -1250
-        position = self.texture.get_rect().move(self.pos[0], self.pos[1])
-        screen.blit(self.texture, position)
-        pygame.display.update()
+        self.rect.x += add[0]
+        if self.rect.x <= -50:
+            self.rect.x = self.size[0] * 2

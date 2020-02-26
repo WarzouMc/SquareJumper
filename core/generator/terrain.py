@@ -25,4 +25,4 @@ class Terrain(pygame.sprite.Sprite):
     def move(self, screen, add):
         self.rect.x += add[0]
         if self.rect.x <= -50:
-            self.rect.x = self.size[0] * 2
+            self.rect.x = self.size[0]

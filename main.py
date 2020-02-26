@@ -3,6 +3,7 @@ import ctypes
 import pygame
 
 from core.game import Game
+from core.player.player import Player
 from eventlistener import keyListener
 
 
@@ -28,12 +29,11 @@ def start(size_div=1.0):
     game.generation(screen=screen, windows_size=size)
     while running:
         screen.fill(black)
-        for terrain in game.terrain_block:
-            terrain.pop(screen=screen)
+        game.player_management(screen=screen)
+        game.auto_move(screen)
         pygame.display.flip()
-        if game.key.get(pygame.K_RIGHT):
-            for terrain in game.terrain_block:
-                terrain.move(screen=screen, add=[-2, 0])
+        if game.key.get(pygame.K_SPACE):
+            game.player_jump()
         for event in pygame.event.get():
             keyListener.EventListener(event, game)
 

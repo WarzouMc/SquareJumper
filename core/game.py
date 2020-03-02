@@ -1,7 +1,8 @@
-from encodings.punycode import selective_find
-
-from core.generator.terrain import Terrain
+from core.generator.terrain import terrain
 from core.player.player import Player
+
+from core.player.iplayer import IPlayer
+
 
 
 class Game:
@@ -11,23 +12,36 @@ class Game:
         self.player = Player()
 
     def generation(self, screen, windows_size):
-        for i in range(int(windows_size[0] / 25) * 2 + 1 + 3):
-            for j in range(3):
-                if 5 == i:
-                    self.player.spawn(screen=screen, position=[i * 25, (windows_size[1] - 25) - 3 * 25])
+        level = terrain.get_levels()[0]
+        for y in range(level.get_length()):
+            for x in range(len(level.get_level_path()[y])):
+                material = level.get_block_at(x=x, y=y)
+                if x == 5 and y == 3:
+                    self.player.spawn(screen=screen, position=[x * material.get_box_dimension()[0], (windows_size[1] - material.get_box_dimension()[1]) - 3 * material.get_box_dimension()[1]])
                     self.player.pop(screen=screen)
-                terrain = Terrain()
-                terrain.pop_gen(pos=[i * 25, (windows_size[1] - 25) - j * 25], size=windows_size)
-                terrain.pop(screen=screen)
-                self.terrain_block[terrain] = "test"
+                if not material.is_full_transparent():
+                    material.pop_gen(pos=[x * material.get_box_dimension()[0],
+                                          (windows_size[1] - material.get_box_dimension()[1]) - y *
+                                          material.get_box_dimension()[1]], size=windows_size)
+                    material.pop(screen=screen)
+                    self.terrain_block[material] = "add"
 
-    def auto_move(self, screen):
-        for terrain in self.terrain_block:
-            terrain.move(screen=screen, add=[-1, 0])
-            terrain.pop(screen=screen)
+    def auto_move(self, screen, size):
+        useless_terrain = {}
+        for terrain_blocks in self.terrain_block:
+            if terrain_blocks.get_x() >= -terrain_blocks.get_box_dimension()[0]:
+                terrain_blocks.move(add=[-1, 0])
+                if terrain_blocks.get_x() <= size[0] + terrain_blocks.get_box_dimension()[0]:
+                    terrain_blocks.pop(screen=screen)
+            else:
+                useless_terrain[terrain_blocks] = "test"
+
+        for terrain_blocks in useless_terrain:
+            self.terrain_block.__delitem__(terrain_blocks)
 
     def player_jump(self):
         self.player.add_y()
+        IPlayer().jump(6)
 
     def player_management(self, screen):
         if self.player.rect.y != self.player.base_pos[1]:

@@ -3,8 +3,7 @@ import ctypes
 import pygame
 
 from core.game import Game
-from core.player.player import Player
-from eventlistener import keyListener
+from eventlistener import keylistener
 
 
 def get_window_size(div=1.0):
@@ -14,7 +13,7 @@ def get_window_size(div=1.0):
 
 def start(size_div=1.0):
     pygame.init()
-    size = width, height = get_window_size(size_div)
+    size = width, height = (25 * 50, 25 * 25)
     speed = [2, 2]
     black = 0, 0, 0
 
@@ -30,12 +29,12 @@ def start(size_div=1.0):
     while running:
         screen.fill(black)
         game.player_management(screen=screen)
-        game.auto_move(screen)
+        game.auto_move(screen, size)
         pygame.display.flip()
         if game.key.get(pygame.K_SPACE):
             game.player_jump()
         for event in pygame.event.get():
-            keyListener.EventListener(event, game)
+            keylistener.EventListener(event, game)
 
 
 if __name__ == "__main__":

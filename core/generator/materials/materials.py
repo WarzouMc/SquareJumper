@@ -11,7 +11,7 @@ class Materials:
         self.by_id = [
             terrainmaterial.Void(),
             terrainmaterial.TerrainBlock(),
-            terrainmaterial.Spike(),
+            terrainmaterial.Spike()
         ]
 
     def get_material_by_id(self, _id=0):

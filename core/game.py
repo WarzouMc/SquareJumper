@@ -4,7 +4,6 @@ from core.player.player import Player
 from core.player.iplayer import IPlayer
 
 
-
 class Game:
     def __init__(self):
         self.key = {}
@@ -30,7 +29,7 @@ class Game:
         useless_terrain = {}
         for terrain_blocks in self.terrain_block:
             if terrain_blocks.get_x() >= -terrain_blocks.get_box_dimension()[0]:
-                terrain_blocks.move(add=[-1, 0])
+                terrain_blocks.move(add=[-4, 0])
                 if terrain_blocks.get_x() <= size[0] + terrain_blocks.get_box_dimension()[0]:
                     terrain_blocks.pop(screen=screen)
             else:

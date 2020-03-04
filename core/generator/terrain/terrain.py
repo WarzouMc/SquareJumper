@@ -4,7 +4,7 @@ from core.generator.materials import materials
 def get_levels():
     level_list = [
         LevelDesigner(level=[
-            [0]*100,
+            [0]*10 + [2]*5 + [0]*85,
             [0]*100,
             [0]*100,
             [0]*100,
@@ -35,3 +35,9 @@ class LevelDesigner:
     def get_block_at(self, x=0, y=0):
         _id = self.get_block_id_at(x, y)
         return materials.Materials().get_material_by_id(_id=_id)
+
+    def get_first_void_block_at(self, x=0):
+        for i in range(len(self.get_level_path())):
+            if self.get_block_at(x=x, y=i) == materials.Materials().void:
+                return x, i
+        return None

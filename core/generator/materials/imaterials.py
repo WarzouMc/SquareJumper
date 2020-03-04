@@ -17,7 +17,14 @@ class IMaterial(pygame.sprite.Sprite):
         self.id = None
         self.dimension = self.texture.get_size()
         self.transparency = 0.0
-        self.bounding_box = [[0, 0], [self.get_x(), 0], [self.get_x(), self.get_y(), [0, self.get_y()]]]
+        self.bounding_box = BoundingBox(bounding_box=[
+            [0, 0],
+            [self.get_x(), 0],
+            [self.get_x(), self.get_y(),
+            [0, self.get_y()]]
+        ])
+        self.bounding_box.get_coin_by_id(id="aa")
+        self.location = Location(self.rect, self.bounding_box)
 
     # Material management
     def pop_gen(self, pos, size):
@@ -64,3 +71,52 @@ class IMaterial(pygame.sprite.Sprite):
 
     def get_bounding_box(self):
         return self.bounding_box
+
+    def get_location(self):
+        return self.location
+
+
+class BoundingBox:
+
+    def __init__(self, bounding_box):
+        self.bounding_box = bounding_box
+        self._id = [
+            "aa",
+            "ab",
+            "bb",
+            "ba"
+        ]
+
+    def get_bounding_box(self):
+        return self.bounding_box
+
+    def get_coin_by_id(self, id):
+        if not self._id.__contains__(id):
+            return None
+        print(str(self._id.index(id)))
+        return self.get_bounding_box()[self._id.index(id)]
+
+    def get_AA_coin(self):
+        return self.get_bounding_box()[0]
+
+    def get_AB_coin(self):
+        return self.get_bounding_box()[1]
+
+    def get_BB_coin(self):
+        return self.get_bounding_box()[2]
+
+    def get_BA_coin(self):
+        return self.get_bounding_box()[3]
+
+    def get_coin_position(self):
+        return self.bounding_box
+
+
+class Location:
+
+    def __init__(self, rect, bounding_box):
+        self._rect = rect
+        self._bounding_box = bounding_box
+
+    def get_aa_location(self, id):
+        return self._rect.x, self._rect.y

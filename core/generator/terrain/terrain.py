@@ -1,10 +1,11 @@
 from core.generator.materials import materials
+from core.generator.terrain import terrainmaterial
 
 
 def get_levels():
     level_list = [
         LevelDesigner(level=[
-            [0]*10 + [2]*5 + [0]*85,
+            [0]*100,
             [0]*100,
             [0]*100,
             [0]*100,
@@ -38,6 +39,6 @@ class LevelDesigner:
 
     def get_first_void_block_at(self, x=0):
         for i in range(len(self.get_level_path())):
-            if self.get_block_at(x=x, y=i) == materials.Materials().void:
+            if self.get_block_id_at(x=x, y=i) != 0:
                 return x, i
         return None

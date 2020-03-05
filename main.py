@@ -20,7 +20,6 @@ def start(size_div=1.0):
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Square Jumper')
 
-    texturetest = pygame.image.load("assets/textures/test_terrain.png")
     recttest = [20, 40]
 
     running = True

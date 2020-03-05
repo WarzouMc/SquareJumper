@@ -5,7 +5,7 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.texture = pygame.image.load("assets/textures/test_terrain.png")
+        self.texture = pygame.image.load("assets/textures/player/player_texture$0.png")
         self.rect = self.texture.get_rect()
         self.rect.x = 0
         self.rect.y = 0

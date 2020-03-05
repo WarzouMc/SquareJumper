@@ -26,10 +26,14 @@ class Game:
                     self.terrain_block[material] = "add"
 
     def auto_move(self, screen, size):
+        player = IPlayer().spawn(position=[0, 0], size=size)
         useless_terrain = {}
+        t = terrain.materials.Materials().get_material_by_id(_id=2)
+        t.pop_gen(pos=[400, (25 * 25) - 150], size=[25 * 50, 25 * 25])
+        t.pop(screen=screen)
         for terrain_blocks in self.terrain_block:
             if terrain_blocks.get_x() >= -terrain_blocks.get_box_dimension()[0]:
-                terrain_blocks.move(add=[-4, 0])
+                terrain_blocks.move(add=[-5, 0], player=t, screen=screen)
                 if terrain_blocks.get_x() <= size[0] + terrain_blocks.get_box_dimension()[0]:
                     terrain_blocks.pop(screen=screen)
             else:
@@ -40,7 +44,6 @@ class Game:
 
     def player_jump(self):
         self.player.add_y()
-        IPlayer().jump(6)
 
     def player_management(self, screen):
         if self.player.rect.y != self.player.base_pos[1]:

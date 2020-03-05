@@ -7,7 +7,7 @@ from core.generator.terrain.terrain import LevelDesigner
 class IPlayer(IMaterial):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(texture_path="assets/textures/player/player_texture$0.png")
         self.id = -1
         self.can_spawn = True
         self.is_in_jump = False

@@ -23,6 +23,12 @@ class IMaterial(pygame.sprite.Sprite):
         self.bounding_box.get_coin_by_id(_id="aa")
         self.location = Location(self.rect, self)
 
+    def set_position(self, position):
+        self.rect.x = position[0]
+        self.rect.y = position[1]
+        self.location = Location(self.rect, self)
+        self.teleport(location=self.location)
+
     # Material management
     def pop_gen(self, pos, size):
         self.rect.x = pos[0]
@@ -34,9 +40,9 @@ class IMaterial(pygame.sprite.Sprite):
     def pop(self, screen):
         screen.blit(self.texture, self.rect)
 
-    def move(self, add, player, screen):
+    def move(self, add, player, screen, windows_size, level):
         self.rect.x += add[0]
-        Collision(material=self).is_in_collision(_material=player, screen=screen)
+        Collision(material=self).is_in_collision(_material=player, screen=screen, windows_size=windows_size, level=level)
 
     def teleport(self, location):
         self.rect.x = location.get_AA()[0]
@@ -133,18 +139,21 @@ class Collision:
         self.location = material.get_location()
         self.material = material
 
-    def is_in_collision(self, _material, screen):
+    def is_in_collision(self, _material, screen, windows_size, level):
         _bounding_box = _material.get_bounding_box()
         _location = _material.get_location()
-        aa = _location.get_AA()[0] >= self.location.get_AA()[0] and _location.get_AA()[1] <= self.location.get_AA()[1]
-        ab = _location.get_AB()[0] <= self.location.get_AB()[0] and _location.get_AB()[1] <= self.location.get_AB()[1]
-        bb = _location.get_BB()[0] <= self.location.get_BB()[0] and _location.get_BB()[1] >= self.location.get_BB()[1]
-        ba = _location.get_BA()[0] >= self.location.get_BA()[0] and _location.get_BA()[1] >= self.location.get_BA()[1]
+        aa = _location.get_AA()[0] > self.location.get_AA()[0] and _location.get_AA()[1] < self.location.get_AA()[1]
+        ab = _location.get_AB()[0] < self.location.get_AB()[0] and _location.get_AB()[1] < self.location.get_AB()[1]
+        bb = _location.get_BB()[0] < self.location.get_BB()[0] and _location.get_BB()[1] > self.location.get_BB()[1]
+        ba = _location.get_BA()[0] > self.location.get_BA()[0] and _location.get_BA()[1] > self.location.get_BA()[1]
         if not (aa or ab or bb or ba) or not self.assignable:
-            print('test')
-            pos = terrain.get_levels()[0].get_first_void_block_at(x=_location.get_block_location()[0])
-            _location = terrain.get_levels()[0].get_block_at(x=pos[0], y=pos[1]).get_location()
-            _material.teleport(location=_location)
+            pos = level.get_first_void_block_at(x=_location.get_block_location()[0])
+            first_void = level.get_block_at(x=pos[0], y=pos[1])
+            first_void.pop_gen(pos=[pos[0] * first_void.get_box_dimension()[0],
+                                  (windows_size[1] - first_void.get_box_dimension()[1]) - pos[1] *
+                                  first_void.get_box_dimension()[1]], size=windows_size)
+            _location = first_void.get_location()
+            _material.set_position(position=[_location.get_AA()[0], _location.get_AA()[1]])
             _material.pop(screen=screen)
 
 

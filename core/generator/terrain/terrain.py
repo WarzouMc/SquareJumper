@@ -1,5 +1,6 @@
 from core.generator.materials import materials
 from core.generator.terrain import terrainmaterial
+from core.generator.materials.imaterials import Location
 
 
 def get_levels():
@@ -8,7 +9,7 @@ def get_levels():
             [0]*100,
             [0]*100,
             [0]*100,
-            [0]*100,
+            [0]*13 + [1] + [0]*86,
             [0]*12 + [1]*3 + [0]*85,
             [0]*10 + [1]*8 + [0]*82,
             [1]*40 + [0]*20 + [1]*40,
@@ -24,6 +25,9 @@ class LevelDesigner:
     def __init__(self, level):
         self.level_path = level
 
+    def set_path(self, path):
+        self.level_path = path
+
     def get_length(self):
         return len(self.level_path)
 
@@ -35,10 +39,11 @@ class LevelDesigner:
 
     def get_block_at(self, x=0, y=0):
         _id = self.get_block_id_at(x, y)
-        return materials.Materials().get_material_by_id(_id=_id)
+        material = materials.Materials().get_material_by_id(_id=_id)
+        return material
 
     def get_first_void_block_at(self, x=0):
         for i in range(len(self.get_level_path())):
-            if self.get_block_id_at(x=x, y=i) != 0:
+            if self.get_block_id_at(x=x, y=i) == 0:
                 return x, i
         return None

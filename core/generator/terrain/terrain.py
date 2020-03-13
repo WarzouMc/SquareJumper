@@ -9,9 +9,9 @@ def get_levels():
             [0]*100,
             [0]*100,
             [0]*100,
-            [0]*13 + [1] + [0]*86,
-            [0]*12 + [1]*3 + [0]*85,
-            [0]*10 + [1]*8 + [0]*82,
+            [0]*13 + [1]*2 + [0]*85,
+            [0]*11 + [1]*5 + [0]*83,
+            [0]*10 + [1]*9 + [0]*81,
             [1]*40 + [0]*20 + [1]*40,
             [1]*50 + [0]*5 + [1]*45,
             [1]*100
@@ -35,6 +35,8 @@ class LevelDesigner:
         return self.level_path
 
     def get_block_id_at(self, x=0, y=0):
+        if len(self.level_path[(self.get_length() - y) - 1]) <= x:
+            return 0
         return self.level_path[(self.get_length() - y) - 1][x]
 
     def get_block_at(self, x=0, y=0):
@@ -45,5 +47,11 @@ class LevelDesigner:
     def get_first_void_block_at(self, x=0):
         for i in range(len(self.get_level_path())):
             if self.get_block_id_at(x=x, y=i) == 0:
+                return x, i
+        return None
+
+    def get_first_void_block_nearby_to(self, x=0, around=0):
+        for i in range(len(self.get_level_path())):
+            if self.get_block_id_at(x=x + around, y=i) == 0:
                 return x, i
         return None

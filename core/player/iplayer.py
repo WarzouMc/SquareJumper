@@ -11,13 +11,12 @@ class IPlayer(IMaterial):
         self.id = -1
         self.can_spawn = True
         self.is_in_jump = False
-        self.location = None
 
-    def spawn(self, position, size):
-        if self.can_spawn:
+    def spawn(self, screen, position, size):
+        if not self.can_spawn:
             return
-        self.location = self.get_bounding_box()
         self.pop_gen(pos=position, size=size)
+        self.pop(screen)
 
     def can_spawn(self):
         return self.can_spawn

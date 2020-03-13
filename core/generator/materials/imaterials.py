@@ -42,7 +42,8 @@ class IMaterial(pygame.sprite.Sprite):
 
     def move(self, add, player, screen, windows_size, level):
         self.rect.x += add[0]
-        Collision(material=self).is_in_collision(_material=player, screen=screen, windows_size=windows_size, level=level)
+        Collision(material=self).is_in_collision(_material=player, screen=screen, windows_size=windows_size,
+                                                 level=level)
 
     def teleport(self, location):
         self.rect.x = location.get_AA()[0]
@@ -77,10 +78,10 @@ class IMaterial(pygame.sprite.Sprite):
     def get_position_y(self):
         return self.rect.y
 
-    def get_x(self):
+    def get_dimension_x(self):
         return self.dimension[0]
 
-    def get_y(self):
+    def get_dimension_y(self):
         return self.dimension[1]
 
     def get_bounding_box(self):
@@ -96,9 +97,9 @@ class BoundingBox:
         self.material = material
         self.bounding_box = [
             [0, 0],
-            [self.material.get_x(), 0],
-            [self.material.get_x(), self.material.get_y()],
-            [0, self.material.get_y()]
+            [self.material.get_dimension_x(), 0],
+            [self.material.get_dimension_x(), self.material.get_dimension_y()],
+            [0, self.material.get_dimension_y()]
         ]
         self._id = [
             "aa",
@@ -146,15 +147,23 @@ class Collision:
         ab = _location.get_AB()[0] < self.location.get_AB()[0] and _location.get_AB()[1] < self.location.get_AB()[1]
         bb = _location.get_BB()[0] < self.location.get_BB()[0] and _location.get_BB()[1] > self.location.get_BB()[1]
         ba = _location.get_BA()[0] > self.location.get_BA()[0] and _location.get_BA()[1] > self.location.get_BA()[1]
-        if not (aa or ab or bb or ba) or not self.assignable:
+        if not (aa or ba or bb or ab) or not self.assignable:
+            print('test')
             pos = level.get_first_void_block_at(x=_location.get_block_location()[0])
+            if not bb and not ba:
+                pos = level.get_first_void_block_nearby_to(x=_location.get_block_location()[0], around=1)
+                back_x = pos[0] - 1
+                x_material = level.get_first_void_block_at(x=back_x)
+                if x_material[1] > pos[1]:
+                    pos = level.get_first_void_block_at(x=_location.get_block_location()[0])
             first_void = level.get_block_at(x=pos[0], y=pos[1])
             first_void.pop_gen(pos=[pos[0] * first_void.get_box_dimension()[0],
-                                  (windows_size[1] - first_void.get_box_dimension()[1]) - pos[1] *
-                                  first_void.get_box_dimension()[1]], size=windows_size)
+                                    (windows_size[1] - first_void.get_box_dimension()[1]) - pos[1] *
+                                    first_void.get_box_dimension()[1]], size=windows_size)
             _location = first_void.get_location()
             _material.set_position(position=[_location.get_AA()[0], _location.get_AA()[1]])
             _material.pop(screen=screen)
+
 
 
 class Location:
@@ -179,6 +188,17 @@ class Location:
 
     def get_BA(self):
         return self.material.get_position_x() + self.bounding_box.get_BA_coin()[0], self.material.get_position_y()
+
+    def add_x(self, x=0):
+        self._rect.x += x
+
+    def add_y(self, y=0):
+        self._rect.y += y
+
+    def add(self, x=0, y=0):
+        self._rect.x += x
+        self._rect.y += y
+
 
     def get_block_location(self):
         return int(self.get()[0] / 50), int(self.get()[1] / 50)

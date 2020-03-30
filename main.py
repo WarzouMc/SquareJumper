@@ -30,8 +30,9 @@ def start(size_div=1.0):
         game.player_management(screen=screen)
         game.auto_move(screen, size)
         pygame.display.flip()
-        if game.key.get(pygame.K_SPACE):
-            game.player_jump()
+        if game.key.get(pygame.K_SPACE) and not game.player.is_auto_down:
+            y = game.player.get_position_y()
+            game.player.jump(power=0.8, last_y=y)
         for event in pygame.event.get():
             keylistener.EventListener(event, game)
 

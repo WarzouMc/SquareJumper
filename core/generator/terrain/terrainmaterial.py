@@ -9,6 +9,14 @@ class Void(core.generator.materials.imaterials.IMaterial):
         self.set_full_transparency()
 
 
+class BoundBlock(core.generator.materials.imaterials.IMaterial):
+
+    def __init__(self):
+        super().__init__()
+        self.id = 0
+        self.set_full_transparency()
+
+
 class TerrainBlock(core.generator.materials.imaterials.IMaterial):
 
     def __init__(self):

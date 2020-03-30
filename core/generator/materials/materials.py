@@ -7,11 +7,13 @@ class Materials:
         self.void = 0
         self.terrain_block = 1
         self.spike = 2
+        self.bound_block = 3
 
         self.by_id = [
             terrainmaterial.Void(),
             terrainmaterial.TerrainBlock(),
-            terrainmaterial.Spike()
+            terrainmaterial.Spike(),
+            terrainmaterial.BoundBlock()
         ]
 
     def get_material_by_id(self, _id=0):

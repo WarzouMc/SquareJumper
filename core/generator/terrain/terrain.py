@@ -4,20 +4,43 @@ from core.generator.materials.imaterials import Location
 
 
 def get_levels():
+    level_0 = [
+        "#################################################################################",
+        "#################################################################################",
+        "#################################################################################",
+        "#################################################################################",
+        "#################################################################################",
+        "#################################################################################",
+        "#############***####*#########################################***###*############",
+        "##########***$$$****$*####***#############################****$$$***$*###########",
+        "#########*$$$$$$$$$$$$****$$$***########################**$$$$$$$$$$$$*##########",
+        "########*$$$$$$$$$$$$$$$$$$$$$$$***##################***$$$$$$$$$$$$$$$***#######",
+        "######**$$$$$$$$$$$$$$$$$$$$$$$$$$$*******#######****$$$$$$$$$$$$$$$$$$$$$*******",
+        "******$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*******$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",
+        "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+    ]
+    value = {'#': 0, '$': 1, '*': 3}
+
     level_list = [
-        LevelDesigner(level=[
-            [0]*100,
-            [0]*100,
-            [0]*100,
-            [0]*13 + [1]*2 + [0]*85,
-            [0]*11 + [1]*5 + [0]*83,
-            [0]*10 + [1]*9 + [0]*81,
-            [1]*40 + [0]*20 + [1]*40,
-            [1]*50 + [0]*5 + [1]*45,
-            [1]*100
-        ])
+        LevelDesigner(level=to_level_path(value=value, string=level_0))
     ]
     return level_list
+
+
+def to_level_path(value, string):
+    x_len = len(string[0])
+    y_len = len(string)
+    level = [[0]*x_len]*y_len
+    y = 0
+    for line in string:
+        x = 0
+        x_path = [0] * x_len
+        for material in line:
+            x_path[x] = int(value.get(material))
+            x += 1
+        level[y] = x_path
+        y += 1
+    return level
 
 
 class LevelDesigner:
@@ -46,12 +69,12 @@ class LevelDesigner:
 
     def get_first_void_block_at(self, x=0):
         for i in range(len(self.get_level_path())):
-            if self.get_block_id_at(x=x, y=i) == 0:
+            if self.get_block_id_at(x=x, y=i) == 0 or self.get_block_id_at(x=x, y=i) == 3:
                 return x, i
         return None
 
     def get_first_void_block_nearby_to(self, x=0, around=0):
         for i in range(len(self.get_level_path())):
-            if self.get_block_id_at(x=x + around, y=i) == 0:
+            if self.get_block_id_at(x=x + around, y=i) == 0 or self.get_block_id_at(x=x + around, y=i) == 3:
                 return x, i
         return None

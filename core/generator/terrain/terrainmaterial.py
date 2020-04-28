@@ -13,7 +13,7 @@ class BoundBlock(core.generator.materials.imaterials.IMaterial):
 
     def __init__(self):
         super().__init__()
-        self.id = 0
+        self.id = 3
         self.set_full_transparency()
 
 

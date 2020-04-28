@@ -30,7 +30,14 @@ class IPlayer(IMaterial):
     def can_spawn(self):
         return self.can_spawn
 
-    def collision(self, level, block, windows_size, screen):
+    def collision(self, level, block, windows_size, screen, background):
+        windows_y_modulo = windows_size[1] % 50
+        if not self.is_in_jump and not self.is_auto_down and (windows_y_modulo - self.get_position_y()) % 50 != 0:
+            position = self.get_position()
+            position[1] -= position[1] % 50
+            position[1] += windows_y_modulo
+            self.set_position(position)
+
         for material in block:
             collision = Collision(material=material).is_in_collision(player=self, screen=screen,
                                                                      windows_size=windows_size,
@@ -48,7 +55,7 @@ class IPlayer(IMaterial):
             self.power = power
             self.last_y = last_y
 
-    def jumping(self, screen):
+    def jumping(self, level, screen, background):
         self.jump_x += 0.1
         temp = int(self.jump_x * 10) / 10
         position = self.get_position()
@@ -56,15 +63,14 @@ class IPlayer(IMaterial):
             position[1] -= int(jump_equation(x=temp, power=self.power))
         else:
             position[1] += int(jump_equation(x=temp, power=self.power))
+        block_position = self.get_location().get_block_location()
+        id = level.get_block_id_at(block_position[0], block_position[1] - 1)
+        id_1 = level.get_block_id_at(block_position[0] + 1, block_position[1] - 1)
         self.set_position(position=position)
         self.pop(screen=screen)
-        if temp >= 8.0:
-            self.jump_x = 0.0
-            self.power = 0.0
-            self.is_in_jump = False
-            position[1] = self.last_y
-            self.set_position(position=position)
-            self.last_y = 0.0
+        if id == 3 or id_1 == 3:
+            self.stop_jump()
+            return
 
     def stop_jump(self):
         self.jump_x = -0.1
@@ -81,10 +87,16 @@ class IPlayer(IMaterial):
         self.down_x = 3.9
         self.is_auto_down = False
 
-    def down(self, screen):
+    def down(self, level, screen, background):
         self.down_x += 0.1
         temp = int(self.down_x * 10) / 10
         position = self.get_position()
-        position[1] += int(jump_equation(x=temp, power=4))
+        position[1] += int(jump_equation(x=temp, power=1))
         self.set_position(position=position)
         self.pop(screen=screen)
+        block_position = self.get_location().get_block_location()
+        id = level.get_block_id_at(block_position[0], block_position[1] - 1)
+        id_1 = level.get_block_id_at(block_position[0] + 1, block_position[1] - 1)
+        if id == 3 or id_1 == 3:
+            self.stop_down()
+            return

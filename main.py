@@ -20,14 +20,13 @@ def start(size_div=1.0):
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Square Jumper')
 
-    recttest = [20, 40]
-
     running = True
     game = Game()
     game.generation(screen=screen, windows_size=size)
+    pygame.mixer.music.load("assets/sounds/play/level_0/Androidal.mp3")
+    pygame.mixer.music.play()
     while running:
         screen.fill(black)
-        game.player_management(screen=screen)
         game.auto_move(screen, size)
         pygame.display.flip()
         if game.key.get(pygame.K_SPACE) and not game.player.is_auto_down:

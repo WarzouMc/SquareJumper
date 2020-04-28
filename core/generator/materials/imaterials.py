@@ -3,8 +3,6 @@ IMaterial class is the class of allowed to create new material (terrain_block, s
 """
 import pygame
 
-from core.generator.terrain import terrain
-
 
 class IMaterial(pygame.sprite.Sprite):
 
@@ -42,8 +40,6 @@ class IMaterial(pygame.sprite.Sprite):
 
     def move(self, add, player, screen, windows_size, level):
         self.rect.x += add[0]
-        #Collision(material=self).is_in_collision(_material=player, screen=screen, windows_size=windows_size,
-        #                                         level=level)
 
     def teleport(self, location):
         self.rect.x = location.get_AA()[0]
@@ -149,31 +145,14 @@ class Collision:
         ba = _location.get_BA()[0] > self.location.get_BA()[0] and _location.get_BA()[1] > self.location.get_BA()[1]
 
         void_block = level.get_first_void_block_at(x=_location.get_block_location()[0])
+        void_block_1 = level.get_first_void_block_at(x=_location.get_block_location()[0] + 1)
 
-        print(str(_location.get_block_location()[1] - 1) + " " + str(void_block[1] + 1))
-
-        if _location.get_block_location()[1] - 1 > void_block[1] + 1 and not player.is_in_jump:
+        if (_location.get_block_location()[1] - 1 > void_block[1] + 1 and
+                _location.get_block_location()[1] - 1 > void_block_1[1] + 1) and not player.is_in_jump:
             return 2
 
         if (not bb and self.material.get_position_y() % 25 != 0) or not bb and not ab:
             return 0
-
-        if (not bb and not ba) and not (self.material.get_id() == 0 or self.material.get_id() == 3) and (player.jump_x > 4.0 or player.is_auto_down):
-            return 1
-
-        """if not (aa or ab or bb or ba):
-            pos = level.get_first_void_block_at(x=_location.get_block_location()[0])
-            if not bb and not ba:
-                pos = level.get_first_void_block_nearby_to(x=_location.get_block_location()[0], around=1)
-                back_x = pos[0]
-                x_material = level.get_first_void_block_nearby_to(x=back_x, around=1)
-                if x_material[1] > pos[1]:
-                    pos = level.get_first_void_block_nearby_to(x=_location.get_block_location()[0], around=0)
-            first_void = level.get_block_at(x=pos[0], y=pos[1])
-            first_void.pop_gen(pos=[pos[0] * first_void.get_box_dimension()[0],
-                                    (windows_size[1] - first_void.get_box_dimension()[1]) - pos[1] *
-                                    first_void.get_box_dimension()[1]], size=windows_size)
-            _location = first_void.get_location()"""
 
 
 class Location:
@@ -210,4 +189,4 @@ class Location:
         self._rect.y += y
 
     def get_block_location(self):
-        return int(self.get()[0] / 50), 13 - int(self.get()[1] / 50)
+        return int(self.get()[0] / 50), 13 - int((self.get()[1] + 26) / 50)

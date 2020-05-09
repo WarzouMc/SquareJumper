@@ -1,2 +1,2 @@
-cd ../SquareJumper/build/"exe.win-amd64-3.6"
+cd build/"exe.win-amd64-3.6"
 SquareJumper.exe

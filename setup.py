@@ -14,5 +14,5 @@ setup(
     name="Report Cards",
     version="VERSION_NUMBER e.g. 0.1",
     description='report card generator',
-    executables=executables
+    executables=executables, requires=['pygame']
 )
